@@ -1,0 +1,1 @@
+{"date":"2022-07-08","metric":"clicks","status":"empty","host":"lib-columnar-analytics","ms_elapsed":19}

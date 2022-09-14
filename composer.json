@@ -1,0 +1,41 @@
+{
+  "name": "envoymediagroup/lib-columnar-analytics",
+  "description": "Envoy Columnar Analytics",
+  "type": "project",
+  "license": "proprietary",
+  "config": {
+    "secure-http": false
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "nikic/php-parser": "^4.14"
+  },
+  "require": {
+    "php": "^7.3 || ^8.0",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-zip": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "EnvoyMediaGroup\\Columna\\": "src"
+    },
+    "classmap": [
+      "tests/WriterAbstractTestCase.php",
+      "tests/ConstraintTestAbstract.php",
+      "tests/ReaderTestTrait.php",
+      "tests/ReflectionHelper.php",
+      "src/"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "EnvoyMediaGroup\\Columna\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit --testdox tests",
+    "test1": "phpunit --testdox",
+    "bundle": "php dev/bundler.php"
+  }
+}

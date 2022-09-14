@@ -1,0 +1,17 @@
+[
+    "car_make",
+    "card_type",
+    "clicks",
+    "email",
+    "event_datetime",
+    "first_name",
+    "ip_address",
+    "is_enabled",
+    "last_name",
+    "match_rate",
+    "platform_id",
+    "sequence_id",
+    "site_id",
+    "url",
+    "user_id"
+]

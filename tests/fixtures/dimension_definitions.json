@@ -1,0 +1,100 @@
+{
+    "car_make": {
+        "axis_type": "dimension",
+        "name": "car_make",
+        "data_type": "string",
+        "precision": null,
+        "empty_value": ""
+    },
+    "card_type": {
+        "axis_type": "dimension",
+        "name": "card_type",
+        "data_type": "string",
+        "precision": null,
+        "empty_value": ""
+    },
+    "email": {
+        "axis_type": "dimension",
+        "name": "email",
+        "data_type": "string",
+        "precision": null,
+        "empty_value": ""
+    },
+    "event_datetime": {
+        "axis_type": "dimension",
+        "name": "event_datetime",
+        "data_type": "datetime",
+        "precision": null,
+        "empty_value": ""
+    },
+    "first_name": {
+        "axis_type": "dimension",
+        "name": "first_name",
+        "data_type": "string",
+        "precision": null,
+        "empty_value": ""
+    },
+    "ip_address": {
+        "axis_type": "dimension",
+        "name": "ip_address",
+        "data_type": "string",
+        "precision": null,
+        "empty_value": ""
+    },
+    "is_enabled": {
+        "axis_type": "dimension",
+        "name": "is_enabled",
+        "data_type": "bool",
+        "precision": null,
+        "empty_value": false
+    },
+    "last_name": {
+        "axis_type": "dimension",
+        "name": "last_name",
+        "data_type": "string",
+        "precision": null,
+        "empty_value": ""
+    },
+    "match_rate": {
+        "axis_type": "dimension",
+        "name": "match_rate",
+        "data_type": "float",
+        "precision": 2,
+        "empty_value": 0.0
+    },
+    "platform_id": {
+        "axis_type": "dimension",
+        "name": "platform_id",
+        "data_type": "int",
+        "precision": null,
+        "empty_value": 0
+    },
+    "sequence_id": {
+        "axis_type": "dimension",
+        "name": "sequence_id",
+        "data_type": "int",
+        "precision": null,
+        "empty_value": 0
+    },
+    "site_id": {
+        "axis_type": "dimension",
+        "name": "site_id",
+        "data_type": "int",
+        "precision": null,
+        "empty_value": 0
+    },
+    "url": {
+        "axis_type": "dimension",
+        "name": "url",
+        "data_type": "string",
+        "precision": null,
+        "empty_value": ""
+    },
+    "user_id": {
+        "axis_type": "dimension",
+        "name": "user_id",
+        "data_type": "string",
+        "precision": null,
+        "empty_value": ""
+    }
+}

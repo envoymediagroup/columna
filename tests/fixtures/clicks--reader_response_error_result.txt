@@ -1,0 +1,1 @@
+{"date":"2022-07-08","metric":"clicks","status":"error","error":"EnvoyMediaGroup\\Columna\\Reader::validateFileMeta file meta does not include required key 'date'.","host":"lib-columnar-analytics","ms_elapsed":12}

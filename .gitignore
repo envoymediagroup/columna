@@ -1,0 +1,6 @@
+.idea
+.vscode
+.env
+vendor
+tests/fixtures/test_output_file.scf
+debug
