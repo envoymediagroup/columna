@@ -1,0 +1,3 @@
+{"date":"2022-07-08","metric":"clicks","status":"success","min":1,"max":11,"sum":16,"matched_row_count":3,"column_meta":[{"definition":{"axis_type":"dimension","name":"md5","data_type":"string","empty_value":""},"index":0},{"definition":{"axis_type":"metric","name":"clicks","data_type":"int","precision":null,"empty_value":0},"index":1},{"definition":{"axis_type":"dimension","name":"platform_id","data_type":"int","precision":null,"empty_value":0},"index":2}],"is_aggregated":true,"aggregate_includes_meta":false,"host":"columna","result_row_count":2,"ms_elapsed":0}
+e4da3b7fbbce2345d7772b0674a318d5,15,5
+8f14e45fceea167a5a36dedd4bea2543,1,7

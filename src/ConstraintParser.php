@@ -20,6 +20,8 @@ class ConstraintParser {
             foreach ($constraint_group as $constraint_index => $constraint) {
                 $temp[$group_index][$constraint_index] = [
                     "name" => $constraint["name"],
+                    //"comparator" => $constraint["comparator"],
+                    //"value" => $constraint["value"],
                     "callable" => $this->generateCallableFromConstraint(
                         $constraint,
                         $column_meta[$constraint["name"]]["definition"]

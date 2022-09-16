@@ -1,8 +1,8 @@
 {
-  "name": "envoymediagroup/lib-columnar-analytics",
-  "description": "Envoy Columnar Analytics",
+  "name": "envoymediagroup/columna",
+  "description": "Columnar analytics for PHP - a pure PHP library to read and write simple columnar files in a performant way.",
   "type": "project",
-  "license": "proprietary",
+  "license": "MIT",
   "config": {
     "secure-http": false
   },
@@ -36,6 +36,6 @@
   "scripts": {
     "test": "phpunit --testdox tests",
     "test1": "phpunit --testdox",
-    "bundle": "php dev/bundler.php"
+    "bundle": "php tools/bundler.php"
   }
 }

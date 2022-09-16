@@ -1,7 +1,7 @@
 <!-- based on: https://github.com/othneildrew/Best-README-Template/blob/master/README.md -->
 # Columnar Analytics (in pure PHP)
 
-On GitHub: [https://github.com/envoymediagroup/lib-columnar-analytics](https://github.com/envoymediagroup/lib-columnar-analytics)
+On GitHub: [https://github.com/envoymediagroup/Columna](https://github.com/envoymediagroup/Columna)
 
 ## About the project
 ### What does it do?
@@ -18,7 +18,7 @@ This library has been in production use as the backbone of Envoy's analytics and
 
 Add this library to your project using [Composer](https://getcomposer.org/):
 ```sh
-composer require envoymediagroup/lib-columnar-analytics
+composer require envoymediagroup/Columna
 ```
 
 
@@ -26,8 +26,11 @@ composer require envoymediagroup/lib-columnar-analytics
 
 ### Writer
 Each columnar file is specific to one date and one metric, with any number of dimensions. For this example, we will assume a metric named `clicks` and three dimensions named `platform_id`, `site_id`, and `url`. Note that we provide the headers and values as separate inputs to the Writer; this makes sense when we are working with large data sets and want to preserve some memory by not duplicating associative string keys on every array item.
-Currently supported data types include strings, ints, floats, and bools, and a special "datetime" type. Datetimes are treated as strings except when evaluating query conditions, when they are parsed with strtotime() and compared with integer operations >, <, =, etc. Nested data is not currently supported. While it is possible to store JSON or other serializations in the string type, these values will not be unserialized by the engine and so cannot be evaluated for nested values. 
 
+#### Data Types
+Currently supported data types include strings, ints, floats, and bools, and a special "datetime" type. Datetimes are treated as strings except when evaluating query conditions, when they are parsed with strtotime() and compared with integer operations >, <, =, etc. Nested data is not currently supported. While it is possible to store JSON or other serializations in the string type, these values will not be unserialized by the engine and so cannot be evaluated for nested values. The column definitions include an empty value which will always be used in place of nulls in the data set, so null is never stored in the files or returned when reading a file. 
+
+#### Usage
 Let's walk through using the Writer in the comments below: 
 ```php
 <?php
@@ -38,7 +41,7 @@ use EnvoyMediaGroup\Columna\Writer;
 use EnvoyMediaGroup\Columna\Reader;
 use EnvoyMediaGroup\Columna\ColumnDefinition;
 
-// Create our data set
+// Create or retrieve our data set
 $array = [
     [
         'clicks' => 12,
@@ -52,26 +55,17 @@ $array = [
         'site_id' => 9,
         'url' => 'https://www.barbaz.net',
     ],
-    //...
+    //... etc.
 ];
 
-// Sort our records by key alphabetically
-foreach ($array as &$row) {
-    ksort($row);
-}
-// Extract the headers and remove them from the data set
-$headers = array_keys(current($array));
-$data = array_map('array_values',$array);
-
 // Define our Metric and our Dimensions
+// The names should match the keys in your data set
 $MetricDefinition = new ColumnDefinition(
     ColumnDefinition::AXIS_TYPE_METRIC, // metric or dimension
-    'clicks',                           // name
+    'clicks',                           // name (should match the keys in your data set)
     ColumnDefinition::DATA_TYPE_INT,    // data type (string, int, float, bool, datetime)
-                                        //   datetime is stored as a string and parsed with strtotime()
-                                        //   when evaluating Reader constraints
     null,                               // precision (for floats)
-    0                                   // default value
+    0                                   // empty value (matching the specified data type)
 );
 
 $DimensionDefinitions = [
@@ -102,8 +96,15 @@ $DimensionDefinitions = [
 $date = '2022-07-08';
 $file_path = "/data_directory/{$date}/{$MetricDefinition->getName()}." . Reader::FILE_EXTENSION;
 
-// Write the columnar file
+// Instantiate the Writer 
 $Writer = new Writer();
+
+// The Writer expects headers (string keys) separate from data (0-indexed).
+//   If your data is associative like the above, you can separate it with
+//   this helper function.
+list($headers,$data) = $Writer->separateHeadersAndData($array);
+
+// Write the columnar file
 $Writer->writeFile(
     $date,
     $MetricDefinition,
@@ -325,7 +326,7 @@ The short answer is performance. I kept the requirements of this library as smal
 
 ## Issues, Feature Requests
 
-See the [open issues](https://github.com/envoymediagroup/columnar-analytics/issues) for a full list of known issues or to submit an issue or feature request. 
+See the [open issues](https://github.com/envoymediagroup/Columna/issues) for a full list of known issues or to submit an issue or feature request. 
 
 Of course, if you spot any egregious bugs or security holes, **please create an issue and notify me right away** (contact info below).
 

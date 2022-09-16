@@ -93,6 +93,139 @@ class WriterAndReaderTest extends WriterAbstractTestCase {
      * @return void
      * @dataProvider readerProvider
      */
+    public function testWritesAndReadsFileWithDataContainingNulls($Reader) {
+        $expected_response_file = self::FIXTURES_DIR . "clicks--reader_response_with_data_containing_nulls.txt";
+        $workload_array = $this->getWorkloadArray();
+        $workload_array["constraints"] = Array(
+            0 => Array(
+                0 => Array(
+                    'name' => 'card_type',
+                    'comparator' => Constraint::CONTAINS_IN,
+                    'value' => ['diner','visa'],
+                ),
+            ),
+        );
+        $row_based_data = $this->getRowBasedData();
+        //Smaller data set for this one
+        $row_based_data = array_slice($row_based_data,0,10,true);
+        $row_based_data[3][2] = null; //clicks is null
+        $row_based_data[7][5] = null; //first_name is null
+
+        $Writer = new Writer($this->getMockFileHelper());
+        $Writer->writeFile(
+            self::TEST_DATE,
+            $this->getMetricDefinitionClicks(),
+            $this->getAllDimensionDefinitions(),
+            $this->getRowBasedHeaders(),
+            $row_based_data,
+            self::TEST_OUTPUT_FILE,
+            true,
+            false
+        );
+
+        $expected_file = self::FIXTURES_DIR . 'clicks--nulls_filled.scf';
+        $this->assertFileEqualsBrief($expected_file,self::TEST_OUTPUT_FILE);
+
+        $Reader->runFromWorkload(json_encode($workload_array));
+        $response = $Reader->getResponsePayload();
+
+//        //For updating the test files
+//        file_put_contents($expected_response_file,$response);
+//        print "Saved to:\n$expected_response_file\n";
+//        exit;
+
+        $expected_response = $this->getExpectedResponseWithCorrectMsElapsed($response,$expected_response_file);
+        $this->assertEquals($expected_response,$response);
+    }
+
+    /**
+     * @param Reader|BundledReader $Reader
+     * @throws \JsonException
+     * @throws \Throwable
+     * @return void
+     * @dataProvider readerProvider
+     */
+    public function testWritesAndReadsFileWithDataNotAlphabetized($Reader) {
+        $expected_response_file = self::FIXTURES_DIR . "clicks--reader_response_with_data_not_alphabetized.txt";
+        $workload_array = $this->getWorkloadArray();
+        $workload_array["dimensions"] = ["platform_id"];
+        $workload_array["constraints"] = Array(
+            0 => Array(
+                0 => Array(
+                    'name' => 'email',
+                    'comparator' => Constraint::ENDS_WITH,
+                    'value' => '@foo.com',
+                ),
+            ),
+        );
+        $row_based_headers = [
+            'site_id',
+            'clicks',
+            'platform_id',
+            'email',
+        ];
+        $row_based_data = [
+            [
+                13,
+                4,
+                5,
+                'a@foo.com',
+            ],
+            [
+                9,
+                11,
+                5,
+                'b@foo.com',
+            ],
+            [
+                47,
+                1,
+                7,
+                'c@foo.com',
+            ],
+        ];
+        $AllDimensionDefs = $this->getAllDimensionDefinitions();
+        $DimensionDefs = [];
+        foreach ($AllDimensionDefs as $DimensionDef) {
+            if (in_array($DimensionDef->getName(),['site_id','platform_id','email']) ) {
+                $DimensionDefs[] = $DimensionDef;
+            }
+        }
+
+        $Writer = new Writer($this->getMockFileHelper());
+        $Writer->writeFile(
+            self::TEST_DATE,
+            $this->getMetricDefinitionClicks(),
+            $DimensionDefs,
+            $row_based_headers,
+            $row_based_data,
+            self::TEST_OUTPUT_FILE,
+            true,
+            false
+        );
+
+        $expected_file = self::FIXTURES_DIR . 'clicks--alpha_sorted.scf';
+        $this->assertFileEqualsBrief($expected_file,self::TEST_OUTPUT_FILE);
+
+        $Reader->runFromWorkload(json_encode($workload_array));
+        $response = $Reader->getResponsePayload();
+
+//        //For updating the test files
+//        file_put_contents($expected_response_file,$response);
+//        print "Saved to:\n$expected_response_file\n";
+//        exit;
+
+        $expected_response = $this->getExpectedResponseWithCorrectMsElapsed($response,$expected_response_file);
+        $this->assertEquals($expected_response,$response);
+    }
+
+    /**
+     * @param Reader|BundledReader $Reader
+     * @throws \JsonException
+     * @throws \Throwable
+     * @return void
+     * @dataProvider readerProvider
+     */
     public function testWritesAndReadsFileWithNoData($Reader) {
         $row_based_data = [];
         $workload_array = $this->getWorkloadArray();
@@ -209,7 +342,7 @@ class WriterAndReaderTest extends WriterAbstractTestCase {
         $this->assertSame(array_values($input_first_row),$result_first_row);
 
         $expected_response = <<<'END'
-{"date":"2022-07-08","metric":"bar","status":"success","min":123,"max":123,"sum":123,"matched_row_count":1,"column_meta":[{"definition":{"axis_type":"dimension","name":"md5","data_type":"string","empty_value":""},"index":0},{"definition":{"axis_type":"metric","name":"bar","data_type":"int","precision":null,"empty_value":0},"index":1},{"definition":{"axis_type":"dimension","name":"foo0","data_type":"string","precision":null,"empty_value":""},"index":2},{"definition":{"axis_type":"dimension","name":"foo1","data_type":"string","precision":null,"empty_value":""},"index":3},{"definition":{"axis_type":"dimension","name":"foo2","data_type":"string","precision":null,"empty_value":""},"index":4},{"definition":{"axis_type":"dimension","name":"foo3","data_type":"string","precision":null,"empty_value":""},"index":5},{"definition":{"axis_type":"dimension","name":"foo4","data_type":"string","precision":null,"empty_value":""},"index":6},{"definition":{"axis_type":"dimension","name":"foo5","data_type":"string","precision":null,"empty_value":""},"index":7},{"definition":{"axis_type":"dimension","name":"foo6","data_type":"string","precision":null,"empty_value":""},"index":8},{"definition":{"axis_type":"dimension","name":"foo7","data_type":"string","precision":null,"empty_value":""},"index":9},{"definition":{"axis_type":"dimension","name":"foo8","data_type":"bool","precision":null,"empty_value":false},"index":10},{"definition":{"axis_type":"dimension","name":"foo9","data_type":"bool","precision":null,"empty_value":false},"index":11}],"is_aggregated":false,"aggregate_includes_meta":false,"host":"lib-columnar-analytics","result_row_count":1,"ms_elapsed":0.00970005989074707}
+{"date":"2022-07-08","metric":"bar","status":"success","min":123,"max":123,"sum":123,"matched_row_count":1,"column_meta":[{"definition":{"axis_type":"dimension","name":"md5","data_type":"string","empty_value":""},"index":0},{"definition":{"axis_type":"metric","name":"bar","data_type":"int","precision":null,"empty_value":0},"index":1},{"definition":{"axis_type":"dimension","name":"foo0","data_type":"string","precision":null,"empty_value":""},"index":2},{"definition":{"axis_type":"dimension","name":"foo1","data_type":"string","precision":null,"empty_value":""},"index":3},{"definition":{"axis_type":"dimension","name":"foo2","data_type":"string","precision":null,"empty_value":""},"index":4},{"definition":{"axis_type":"dimension","name":"foo3","data_type":"string","precision":null,"empty_value":""},"index":5},{"definition":{"axis_type":"dimension","name":"foo4","data_type":"string","precision":null,"empty_value":""},"index":6},{"definition":{"axis_type":"dimension","name":"foo5","data_type":"string","precision":null,"empty_value":""},"index":7},{"definition":{"axis_type":"dimension","name":"foo6","data_type":"string","precision":null,"empty_value":""},"index":8},{"definition":{"axis_type":"dimension","name":"foo7","data_type":"string","precision":null,"empty_value":""},"index":9},{"definition":{"axis_type":"dimension","name":"foo8","data_type":"bool","precision":null,"empty_value":false},"index":10},{"definition":{"axis_type":"dimension","name":"foo9","data_type":"bool","precision":null,"empty_value":false},"index":11}],"is_aggregated":false,"aggregate_includes_meta":false,"host":"columna","result_row_count":1,"ms_elapsed":0.00970005989074707}
 c0ea8d7333c06309284d25e192633236,123,"chapter 7 bankruptcy on credit for how long","chapter 7 \"bankruptcy\" on credit for how long\\","chapter 7 \\\"bankruptcy\" on credit for how long\\","chapter 7 \\\"bankruptcy\" /on, \\/credit \\for how long\\",",chapter 7 \\\"bankruptcy\" /on, \\/credit \\for how long\\,","\\,chapter 7 \\\"bankruptcy\" /on, \\/credit \\for how long\\\\,","\\,chapter 7 \\\"bankruptcy\" /on, \\/credit \\for how long\\\\,","[\"\\\\,chapter 7 \\\\\\\"bankruptcy\\\" \\/on, \\\\\\/credit \\\\for how long\\\\\"]",1,0
 END;
         $expected_response = trim($expected_response);

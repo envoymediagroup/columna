@@ -28,7 +28,7 @@ class ResponseTest extends TestCase {
             'column_meta' => $this->getExpectedColumnMeta(),
             'is_aggregated' => true,
             'aggregate_includes_meta' => false,
-            'host' => 'lib-columnar-analytics',
+            'host' => 'columna',
             'result_row_count' => 68,
             'ms_elapsed' => 44,
         );
@@ -54,7 +54,7 @@ class ResponseTest extends TestCase {
             'column_meta' => $this->getExpectedColumnMeta(),
             'is_aggregated' => true,
             'aggregate_includes_meta' => true,
-            'host' => 'lib-columnar-analytics',
+            'host' => 'columna',
             'result_row_count' => 68,
             'ms_elapsed' => 23,
         );
@@ -79,7 +79,7 @@ class ResponseTest extends TestCase {
             'column_meta' => $this->getExpectedColumnMeta(),
             'is_aggregated' => false,
             'aggregate_includes_meta' => false,
-            'host' => 'lib-columnar-analytics',
+            'host' => 'columna',
             'result_row_count' => 122,
             'ms_elapsed' => 23,
         );
@@ -98,7 +98,7 @@ class ResponseTest extends TestCase {
             'date' => '2022-07-08',
             'metric' => 'clicks',
             'status' => 'empty',
-            'host' => 'lib-columnar-analytics',
+            'host' => 'columna',
             'ms_elapsed' => 19,
         );
         $expected_results = [];
@@ -124,7 +124,7 @@ class ResponseTest extends TestCase {
             'metric' => 'clicks',
             'status' => 'error',
             'error' => 'EnvoyMediaGroup\Columna\Reader::validateFileMeta file meta does not include required key \'date\'.',
-            'host' => 'lib-columnar-analytics',
+            'host' => 'columna',
             'ms_elapsed' => 12,
         );
         $expected_results = [];

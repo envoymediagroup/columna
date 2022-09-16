@@ -57,6 +57,89 @@ class WriterTest extends WriterAbstractTestCase {
         $this->assertFileEqualsBrief($expected_file,self::TEST_OUTPUT_FILE);
     }
 
+    public function testWritesFileWithDataWithNulls() {
+        $row_based_data = $this->getRowBasedData();
+        //Smaller data set for this one
+        $row_based_data = array_slice($row_based_data,0,10,true);
+        $row_based_data[3][2] = null; //clicks is null
+        $row_based_data[7][5] = null; //first_name is null
+
+        $Writer = new Writer($this->getMockFileHelper());
+        $Writer->writeFile(
+            self::TEST_DATE,
+            $this->getMetricDefinitionClicks(),
+            $this->getAllDimensionDefinitions(),
+            $this->getRowBasedHeaders(),
+            $row_based_data,
+            self::TEST_OUTPUT_FILE,
+            true,
+            false
+        );
+
+//        //For updating the test files
+//        print "Saved output with data to file:\n" . self::TEST_OUTPUT_FILE . "\n";
+//        exit;
+
+        $expected_file = self::FIXTURES_DIR . 'clicks--nulls_filled.scf';
+        $this->assertFileEqualsBrief($expected_file,self::TEST_OUTPUT_FILE);
+    }
+
+    public function testWritesFileWithDataNotAlphabetized() {
+        $AllDimensionDefs = $this->getAllDimensionDefinitions();
+        $DimensionDefs = [];
+        foreach ($AllDimensionDefs as $DimensionDef) {
+            if (in_array($DimensionDef->getName(),['site_id','platform_id','email']) ) {
+                $DimensionDefs[] = $DimensionDef;
+            }
+        }
+
+        $row_based_headers = [
+            'site_id',
+            'clicks',
+            'platform_id',
+            'email',
+        ];
+        $row_based_data = [
+            [
+                13,
+                4,
+                5,
+                'a@foo.com',
+            ],
+            [
+                9,
+                11,
+                5,
+                'b@foo.com',
+            ],
+            [
+                47,
+                1,
+                7,
+                'c@foo.com',
+            ],
+        ];
+
+        $Writer = new Writer($this->getMockFileHelper());
+        $Writer->writeFile(
+            self::TEST_DATE,
+            $this->getMetricDefinitionClicks(),
+            $DimensionDefs,
+            $row_based_headers,
+            $row_based_data,
+            self::TEST_OUTPUT_FILE,
+            true,
+            false
+        );
+
+//        //For updating the test files
+//        print "Saved output with data to file:\n" . self::TEST_OUTPUT_FILE . "\n";
+//        exit;
+
+        $expected_file = self::FIXTURES_DIR . 'clicks--alpha_sorted.scf';
+        $this->assertFileEqualsBrief($expected_file,self::TEST_OUTPUT_FILE);
+    }
+
     public function testWritesFileWithNoData() {
         $row_based_data = [];
 
@@ -327,7 +410,7 @@ class WriterTest extends WriterAbstractTestCase {
         );
     }
 
-    public function throwsOnInvalidOutputFilePath() {
+    public function testThrowsOnInvalidOutputFilePath() {
         $this->expectExceptionMessage("does not exist or is not writable");
         $Writer = new Writer($this->getMockFileHelper());
         $Writer->writeFile(

@@ -21,7 +21,7 @@ use SplFileObject;
  */
 class BundledReader
 {
-    public const LIB_MAJOR_VERSION = 1;
+    public const LIB_MAJOR_VERSION = 0;
     public const FILE_EXTENSION = 'scf';
     public const FILE_STATUS_HAS_DATA = 'has data';
     public const FILE_STATUS_NO_DATA = 'no data';
@@ -156,7 +156,6 @@ class BundledReader
         } finally {
             $this->closeFile($File);
         }
-        $data_set_before = $data_set;
         if ($data_set === []) {
             $this->handleEmptyResults($date, $metric);
             return;
@@ -199,7 +198,7 @@ class BundledReader
         $required_keys = ["date", "metric", "status", "lib_version"];
         foreach ($required_keys as $key) {
             if (!array_key_exists($key, $file_meta)) {
-                throw new Exception(__CLASS__ . '::' . __FUNCTION__ . " file meta does not include required key '{$key}'.");
+                throw new Exception(self::class . '::' . __FUNCTION__ . " file meta does not include required key '{$key}'.");
             }
         }
         if ($file_meta["lib_version"] > self::LIB_MAJOR_VERSION) {
@@ -896,7 +895,12 @@ class BundledConstraintParser
         $temp = [];
         foreach ($constraints as $group_index => $constraint_group) {
             foreach ($constraint_group as $constraint_index => $constraint) {
-                $temp[$group_index][$constraint_index] = ["name" => $constraint["name"], "callable" => $this->generateCallableFromConstraint($constraint, $column_meta[$constraint["name"]]["definition"])];
+                $temp[$group_index][$constraint_index] = [
+                    "name" => $constraint["name"],
+                    //"comparator" => $constraint["comparator"],
+                    //"value" => $constraint["value"],
+                    "callable" => $this->generateCallableFromConstraint($constraint, $column_meta[$constraint["name"]]["definition"]),
+                ];
             }
         }
         return $temp;

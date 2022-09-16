@@ -1,15 +1,15 @@
 version: "3.7"
 services:
-  lib-columnar-analytics:
-    image: lib-columnar-analytics:local
-    hostname: lib-columnar-analytics
-    container_name: lib-columnar-analytics
+  columna:
+    image: columna:local
+    hostname: columna
+    container_name: columna
     build:
       context: .
       dockerfile: ./Dockerfile
     volumes:
       - /tmp
-      - ${LOCAL_DEV_LIB_COLUMNAR_ANALYTICS_FOLDER-~/git/lib-columnar-analytics}:/app
+      - ${LOCAL_DEV_COLUMNA_DIR-~/git/Columna}:/app
     environment:
       - XDEBUG_CONFIG
       - PHP_IDE_CONFIG

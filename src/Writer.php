@@ -55,8 +55,10 @@ class Writer extends WriterAbstract {
             $do_cardinality_sort = false;
         }
 
+        [$row_based_headers,$row_based_data] = $this->alphaSortHeadersAndData($row_based_headers,$row_based_data);
         $this->validateRowBasedHeaders($row_based_headers);
         $this->validateRowBasedData($row_based_data);
+        $row_based_data = $this->replaceNullsWithEmptyValues($row_based_data);
         $row_based_data = $this->convertRowsToStrings($row_based_data);
         if ($do_cardinality_sort) {
             $this->sortByCardinality($row_based_data);
@@ -75,6 +77,24 @@ class Writer extends WriterAbstract {
     }
 
     /**
+     * @param array $associative_data
+     * @throws Exception
+     * @return array
+     */
+    public function separateHeadersAndData(array $associative_data): array {
+        // Extract the headers and remove them from the data set
+        $headers = array_keys(current($associative_data));
+        $data = [];
+        foreach ($associative_data as $row) {
+            if (array_keys($row) !== $headers) {
+                throw new Exception(__CLASS__.'::'.__FUNCTION__." data did not have a consistent set of keys.");
+            }
+            $data[] = array_values($row);
+        }
+        return [$headers,$data];
+    }
+
+    /**
      * @param array $row_based_data
      * @throws JsonException
      * @return array
@@ -85,6 +105,23 @@ class Writer extends WriterAbstract {
             $new_array[$i] = CsvSafeHelper::convertValuesToStrings($row);
         }
         return $new_array;
+    }
+
+    /**
+     * @param array $row_based_data
+     * @throws Exception
+     * @return array
+     */
+    protected function replaceNullsWithEmptyValues(array $row_based_data): array {
+        foreach ($row_based_data as &$row) {
+            foreach ($row as $j => &$value) {
+                if (is_null($value)) {
+                    $Column = $this->getColumnDefinition($this->indexes_to_column_names[$j]);
+                    $value = $Column->getEmptyValue();
+                }
+            }
+        }
+        return $row_based_data;
     }
 
     /**
@@ -187,7 +224,7 @@ class Writer extends WriterAbstract {
                     "at row {$i}.");
             }
             foreach ($row as $column => $value) {
-                if (!is_scalar($value)) {
+                if (!(is_scalar($value) || is_null($value))) { //Nulls handled elsewhere
                     $type = gettype($value);
                     throw new Exception(__CLASS__.'::'.__FUNCTION__." values of type '{$type}' are not currently " .
                         "supported. Supported types: bool, int, float, string. " .
@@ -195,6 +232,33 @@ class Writer extends WriterAbstract {
                 }
             }
         }
+    }
+
+    /**
+     * @param array $row_based_headers
+     * @param array $row_based_data
+     * @return array
+     */
+    protected function alphaSortHeadersAndData(array $row_based_headers, array $row_based_data): array {
+        $headers_flip = array_flip($row_based_headers);
+        ksort($headers_flip);
+        $new_headers = array_keys($headers_flip);
+
+        //Skip if already sorted.
+        if ($row_based_headers === $new_headers) {
+            return [$row_based_headers,$row_based_data];
+        }
+
+        $new_data = [];
+        foreach ($row_based_data as $row) {
+            $new_row = [];
+            foreach ($new_headers as $i => $key) {
+                $new_row[$i] = $row[$headers_flip[$key]];
+            }
+            $new_data[] = $new_row;
+        }
+
+        return [$new_headers,$new_data];
     }
 
     /**

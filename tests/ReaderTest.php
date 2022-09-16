@@ -189,7 +189,7 @@ class ReaderTest extends TestCase {
             'metric' => 'clicks',
             'status' => 'error',
             'error' => $error,
-            'host' => 'lib-columnar-analytics',
+            'host' => 'columna',
             'ms_elapsed' => $metadata['ms_elapsed'],
         ];
         $this->assertEquals($expected,$metadata);
@@ -207,7 +207,7 @@ class ReaderTest extends TestCase {
             "date" => "2022-07-08",
             "metric" => "clicks",
             "status" => "no data",
-            "lib_version" => 1,
+            "lib_version" => 0,
         ];
         $this->assertEquals($expected,$result);
     }
