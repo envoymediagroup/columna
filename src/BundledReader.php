@@ -21,7 +21,7 @@ use SplFileObject;
  */
 class BundledReader
 {
-    public const LIB_MAJOR_VERSION = 0;
+    public const LIB_MAJOR_VERSION = 1;
     public const FILE_EXTENSION = 'scf';
     public const FILE_STATUS_HAS_DATA = 'has data';
     public const FILE_STATUS_NO_DATA = 'no data';

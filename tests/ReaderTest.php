@@ -207,7 +207,7 @@ class ReaderTest extends TestCase {
             "date" => "2022-07-08",
             "metric" => "clicks",
             "status" => "no data",
-            "lib_version" => 0,
+            "lib_version" => 1,
         ];
         $this->assertEquals($expected,$result);
     }

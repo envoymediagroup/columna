@@ -111,11 +111,61 @@ $Writer->writeFile(
     $DimensionDefinitions,
     $headers,
     $data,
-    $file_path
+    $file_path,
+    // Some optional flags:
+    //$do_rle_compression = true,   // Perform run-length encoding (RLE) compression
+    //$do_cardinality_sort = false, // Sort data by cardinality of columns before RLE
+    //$lock_output_file = true      // Acquire an exclusive lock when writing output file
 );
 ```
 
 Now we have a complete file at `$file_path`.
+
+### CombinedWriter
+The regular `Writer` allows you to take a row-based data set and transform it into a columnar file. The `CombinedWriter` then allows you to take multiple existing columnar files and combine them into a new columnar file containing all the data from the provided files. This only works if the files you provide are all for the same metric, on the same date, with the same columns. You can use this to distribute the work of generating data sets and files across a large number of workers, and then use another worker to combine those results into a single large file containing all the data for that metric on that date. You can use it like so:
+
+```php
+<?php
+require('../vendor/autoload.php');
+
+// Import classes
+use EnvoyMediaGroup\Columna\CombinedWriter;
+use EnvoyMediaGroup\Columna\ColumnDefinition;
+
+// Set our arguments
+$date = '2022-07-08';
+$metric = 'clicks';
+$partial_files = [
+    "/tmp/{$date}/{$metric}/partial_1.scf",
+    "/tmp/{$date}/{$metric}/partial_2.scf",
+    "/tmp/{$date}/{$metric}/partial_3.scf",
+    //... etc.
+];
+$combined_file_path = "/data_directory/{$date}/{$metric}." . Reader::FILE_EXTENSION;
+
+// See Writer example above for metric and dimension definitions
+$MetricDefinition = new ColumnDefinition(...); 
+$DimensionDefinitions = [...];
+
+// Write the combined file from the partial files
+$Writer = new CombinedWriter();
+$response = $Writer->writeCombinedFile(
+    $date,
+    $MetricDefinition,
+    $DimensionDefinitions,
+    $partial_files,
+    $combined_file_path
+    // Some optional flags:
+    //$lock_output_file = true      // Acquire an exclusive lock when writing output file
+);
+
+// If you want to remove the partial files after creating the combined file:
+foreach ($partial_files as $partial_file) {
+    unlink($partial_file);
+}
+```
+
+We now have a file at `$combined_file_path` with all the data in it from the array of `$partial_files` we collected.
 
 ### Reader
 Here's how to read a file. Note that this library contains both `Reader` and `BundledReader` classes. They both do the same thing and you can use them interchangeably, but you will see a slight performance win by using the `BundledReader` because it reduces the number of `include()`s PHP has to perform. It's a small win that can add up at scale.
