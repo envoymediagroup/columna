@@ -14,10 +14,6 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" \
     && apk add --no-cache $PHPIZE_DEPS \
     && pecl install xdebug-3.1.1 \
     && docker-php-ext-enable xdebug \
-    && apk add --no-cache zip \
-    && apk add --no-cache libzip \
-    && apk add --no-cache libzip-dev \
-    && docker-php-ext-install zip \
     && apk del --purge $PHPIZE_DEPS \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

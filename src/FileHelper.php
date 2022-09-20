@@ -129,12 +129,12 @@ class FileHelper {
      * @param SplFileObject[]|null $Files
      * @return void
      */
-    public function closeAndDeleteFiles(?array &$Files): void {
+    public function closeFiles(?array &$Files): void {
         if (is_null($Files)) {
             return;
         }
         foreach ($Files as &$File) {
-            $this->closeAndDeleteFile($File);
+            $File = null;
         }
     }
 

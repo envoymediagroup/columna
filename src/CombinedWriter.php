@@ -245,7 +245,7 @@ class CombinedWriter extends WriterAbstract {
             return $PartialOutputFile;
         } finally {
             $this->FileHelper->closeAndDeleteFile($TmpFile);
-            $this->FileHelper->closeAndDeleteFiles($PartialFiles);
+            $this->FileHelper->closeFiles($PartialFiles);
         }
     }
 
