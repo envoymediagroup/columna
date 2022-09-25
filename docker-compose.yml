@@ -9,7 +9,7 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - /tmp
-      - ${LOCAL_DEV_COLUMNA_DIR-~/git/Columna}:/app
+      - ${LOCAL_DEV_COLUMNA_DIR-~/git/columna}:/app
     environment:
       - XDEBUG_CONFIG
       - PHP_IDE_CONFIG

@@ -1,7 +1,7 @@
 <!-- based on: https://github.com/othneildrew/Best-README-Template/blob/master/README.md -->
 # Columnar Analytics (in pure PHP)
 
-On GitHub: [https://github.com/envoymediagroup/Columna](https://github.com/envoymediagroup/Columna)
+On GitHub: [https://github.com/envoymediagroup/columna](https://github.com/envoymediagroup/columna)
 
 ## About the project
 ### What does it do?
@@ -18,7 +18,7 @@ This library has been in production use as the backbone of Envoy's analytics and
 
 Add this library to your project using [Composer](https://getcomposer.org/):
 ```sh
-composer require envoymediagroup/Columna
+composer require envoymediagroup/columna
 ```
 
 
@@ -376,7 +376,7 @@ The short answer is performance. I kept the requirements of this library as smal
 
 ## Issues, Feature Requests
 
-See the [open issues](https://github.com/envoymediagroup/Columna/issues) for a full list of known issues or to submit an issue or feature request. 
+See the [open issues](https://github.com/envoymediagroup/columna/issues) for a full list of known issues or to submit an issue or feature request. 
 
 Of course, if you spot any egregious bugs or security holes, **please create an issue and notify me right away** (contact info below).
 
