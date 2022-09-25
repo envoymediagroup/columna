@@ -21,6 +21,8 @@ Add this library to your project using [Composer](https://getcomposer.org/):
 composer require envoymediagroup/columna
 ```
 
+## File format
+What file format does this library use to store data? The file extension `.scf` is for Simple Columnar Format, and it is simple: all the metadata about the file, its columns, and their definitions and offsets are stored on line 1 in a JSON header. The rest of the record is CSV-like data in a columnar arrangement (each column corresponding to one line in the file) using RLE compression and a Record Separator character as the RLE delimiter. There is some extra escaping applied to the strings to increase the range of valid values that can be stored and retrieved. [See a sample file here.](https://github.com/envoymediagroup/columna/blob/main/tests/fixtures/clicks--has_data_no_csort.scf)
 
 ## Usage
 
@@ -249,7 +251,7 @@ $workload_array = [
     ],
     "do_aggregate" => true,
     "do_aggregate_meta" => false,
-    "file" => "path/to/file.ccf",
+    "file" => "path/to/file.scf",
 ];
 $workload = json_encode($workload_array);
 
@@ -365,9 +367,6 @@ Array(
     // ... etc.
 )
 ```
-
-## File format
-What file format does this library use to store data? It's fairly simple: all the metadata about the file, its columns, and their definitions and offsets are stored on line 1 in a simple JSON header. The rest of the record is CSV data in a columnar arrangement (each column corresponding to one line in the file) using RLE compression and a Record Separator character as the delimiter between the RLE values and their repetition counts. For a sample, see `tests/fixtures/clicks--has_data_with_csort.ccf`. The file extension is for Columna Columnar Format.
 
 ## Q&A
 #### Why didn't you use library X, built-in function Y, or design pattern Z?
