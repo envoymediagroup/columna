@@ -20,17 +20,19 @@
       "EnvoyMediaGroup\\Columna\\": "src"
     },
     "classmap": [
-      "tests/WriterAbstractTestCase.php",
-      "tests/ConstraintTestAbstract.php",
-      "tests/ReaderTestTrait.php",
-      "tests/ReflectionHelper.php",
       "src/"
     ]
   },
   "autoload-dev": {
     "psr-4": {
       "EnvoyMediaGroup\\Columna\\Tests\\": "tests/"
-    }
+    },
+    "classmap": [
+      "tests/WriterAbstractTestCase.php",
+      "tests/ConstraintTestAbstract.php",
+      "tests/ReaderTestTrait.php",
+      "tests/ReflectionHelper.php"
+    ]
   },
   "scripts": {
     "test": "phpunit --testdox tests",
