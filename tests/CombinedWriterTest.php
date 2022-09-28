@@ -49,9 +49,9 @@ class CombinedWriterTest extends WriterAbstractTestCase {
             protected function getChunkSize(): int {
                 return 2;
             }
-            protected function combineFilesRecursivelyByChunks(array $partial_files) {
+            protected function combineFilesRecursivelyByChunks(array $partial_files,bool $recur = false) {
                 ++$this->combine_invocations;
-                return parent::combineFilesRecursivelyByChunks($partial_files);
+                return parent::combineFilesRecursivelyByChunks($partial_files, $recur);
             }
         };
 
@@ -82,9 +82,9 @@ class CombinedWriterTest extends WriterAbstractTestCase {
             protected function getChunkSize(): int {
                 return 2;
             }
-            protected function combineFilesRecursivelyByChunks(array $partial_files) {
+            protected function combineFilesRecursivelyByChunks(array $partial_files, bool $recur = false) {
                 ++$this->combine_invocations;
-                return parent::combineFilesRecursivelyByChunks($partial_files);
+                return parent::combineFilesRecursivelyByChunks($partial_files,$recur);
             }
         };
 

@@ -57,6 +57,7 @@ class FileHelper {
         }
         $TmpFile = new SplFileObject($tmp_file_path,'w+');
         //No need to lock.
+        print __METHOD__ . ": $tmp_file_path\n";
         return $TmpFile;
     }
 
@@ -115,6 +116,7 @@ class FileHelper {
      * @return void
      */
     public function closeAndDeleteFile(?SplFileObject &$File): void {
+        print __METHOD__." invoked: " . (is_null($File) ? 'null' : $File->getPathname()) . "\n";
         if (is_null($File)) {
             return;
         }
@@ -123,6 +125,7 @@ class FileHelper {
         $File = null;
 
         @unlink($file_path);
+        print __METHOD__ . " unlinked: $file_path\n";
     }
 
     /**
@@ -135,6 +138,19 @@ class FileHelper {
         }
         foreach ($Files as &$File) {
             $File = null;
+        }
+    }
+
+    /**
+     * @param SplFileObject[]|null $Files
+     * @return void
+     */
+    public function closeAndDeleteFiles(?array &$Files): void {
+        if (is_null($Files)) {
+            return;
+        }
+        foreach ($Files as &$File) {
+            $this->closeAndDeleteFile($File);
         }
     }
 

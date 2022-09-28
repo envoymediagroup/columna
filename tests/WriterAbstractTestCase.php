@@ -34,16 +34,7 @@ class WriterAbstractTestCase extends TestCase {
      */
     protected function getMockFileHelper(): FileHelper {
         return new class extends FileHelper {
-            public function closeAndDeleteFile(?SplFileObject &$File): void {
-                if (is_null($File)) {
-                    return;
-                }
-                $File = null;
-                //Don't delete.
-            }
-            public function deleteFlaggedFilesAsync(): void {
-                //Don't delete
-            }
+            //TODO No longer overrides anything. This method call can be removed.
         };
     }
 

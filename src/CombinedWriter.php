@@ -63,7 +63,7 @@ class CombinedWriter extends WriterAbstract {
      * @throws Throwable
      * @return string|SplFileObject
      */
-    protected function combineFilesRecursivelyByChunks(array $partial_files) {
+    protected function combineFilesRecursivelyByChunks(array $partial_files, bool $recur = false) {
         if (count($partial_files) === 1) {
             return current($partial_files);
         }
@@ -72,12 +72,12 @@ class CombinedWriter extends WriterAbstract {
             $chunks = array_chunk($partial_files, $this->getChunkSize());
             $more_partial_files = [];
             foreach ($chunks as $chunk) {
-                $more_partial_files[] = $this->combineFiles($chunk);
+                $more_partial_files[] = $this->combineFiles($chunk,$recur);
             }
-            return $this->combineFilesRecursivelyByChunks($more_partial_files);
+            return $this->combineFilesRecursivelyByChunks($more_partial_files,true);
         }
 
-        return $this->combineFiles($partial_files);
+        return $this->combineFiles($partial_files,$recur);
     }
 
     /**
@@ -219,7 +219,7 @@ class CombinedWriter extends WriterAbstract {
      * @throws Throwable
      * @return SplFileObject|EmptyFile
      */
-    protected function combineFiles(array $partial_files) {
+    protected function combineFiles(array $partial_files, bool $recur) {
         $TmpFile = null;
         $PartialFiles = null;
         try {
@@ -245,7 +245,12 @@ class CombinedWriter extends WriterAbstract {
             return $PartialOutputFile;
         } finally {
             $this->FileHelper->closeAndDeleteFile($TmpFile);
-            $this->FileHelper->closeFiles($PartialFiles);
+
+            if ($recur === true) {
+                $this->FileHelper->closeAndDeleteFiles($PartialFiles);
+            } else {
+                $this->FileHelper->closeFiles($PartialFiles);
+            }
         }
     }
 
