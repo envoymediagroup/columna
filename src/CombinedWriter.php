@@ -42,15 +42,30 @@ class CombinedWriter extends WriterAbstract {
 
         if (is_a($combined_file,EmptyFile::class)) {
             $this->writeOutputFileNoData();
-            return [
-                "status" => Reader::FILE_STATUS_NO_DATA,
-                "write_time_ms" => $this->millisecondsElapsed($hr_start),
-            ];
+            return $this->getNoDataResponse($hr_start);
         }
 
         $combined_file = is_a($combined_file,SplFileObject::class) ? $combined_file->getPathname() : $combined_file;
-        $this->moveCombinedFileToOutputFile($combined_file);
+        $this->moveCombinedFileToOutputFile($combined_file,$partial_file_paths);
+        return $this->getHasDataResponse($hr_start);
+    }
 
+    /**
+     * @param int $hr_start
+     * @return array
+     */
+    protected function getNoDataResponse(int $hr_start): array {
+        return [
+            "status" => Reader::FILE_STATUS_NO_DATA,
+            "write_time_ms" => $this->millisecondsElapsed($hr_start),
+        ];
+    }
+
+    /**
+     * @param int $hr_start
+     * @return array
+     */
+    protected function getHasDataResponse(int $hr_start): array {
         return [
             "status" => Reader::FILE_STATUS_HAS_DATA,
             "write_time_ms" => $this->millisecondsElapsed($hr_start),
@@ -376,11 +391,13 @@ class CombinedWriter extends WriterAbstract {
 
     /**
      * @param string $combined_file_path
+     * @param array $partial_file_paths
      * @throws Exception
      * @return void
      */
-    protected function moveCombinedFileToOutputFile(string $combined_file_path): void {
-        $this->FileHelper->moveFile($combined_file_path,$this->output_file_path,$this->lock_output_file);
+    protected function moveCombinedFileToOutputFile(string $combined_file_path, array $partial_file_paths): void {
+        $preserve_original = (count($partial_file_paths) === 1 && $partial_file_paths[0] === $combined_file_path);
+        $this->FileHelper->moveFile($combined_file_path,$this->output_file_path,$this->lock_output_file,$preserve_original);
     }
 
 }

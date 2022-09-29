@@ -57,7 +57,6 @@ class FileHelper {
         }
         $TmpFile = new SplFileObject($tmp_file_path,'w+');
         //No need to lock.
-        print __METHOD__ . ": $tmp_file_path\n";
         return $TmpFile;
     }
 
@@ -93,10 +92,16 @@ class FileHelper {
      * @param string $origin_file_path
      * @param string $destination_file_path
      * @param bool $acquire_exclusive_lock_on_destination
+     * @param bool $preserve_original
      * @throws Exception
      * @return void
      */
-    public function moveFile(string $origin_file_path, string $destination_file_path, bool $acquire_exclusive_lock_on_destination): void {
+    public function moveFile(
+        string $origin_file_path,
+        string $destination_file_path,
+        bool $acquire_exclusive_lock_on_destination,
+        bool $preserve_original
+    ): void {
         $OriginFile = null;
         $DestinationFile = null;
         try {
@@ -106,7 +111,11 @@ class FileHelper {
                 $DestinationFile->fwrite($OriginFile->fgets());
             }
         } finally {
-            $this->closeAndDeleteFile($OriginFile);
+            if ($preserve_original === true) {
+                $this->closeFileAndUnlockIfNeeded($OriginFile,false);
+            } else {
+                $this->closeAndDeleteFile($OriginFile);
+            }
             $this->closeFileAndUnlockIfNeeded($DestinationFile,$acquire_exclusive_lock_on_destination);
         }
     }
@@ -116,7 +125,6 @@ class FileHelper {
      * @return void
      */
     public function closeAndDeleteFile(?SplFileObject &$File): void {
-        print __METHOD__." invoked: " . (is_null($File) ? 'null' : $File->getPathname()) . "\n";
         if (is_null($File)) {
             return;
         }
@@ -125,7 +133,6 @@ class FileHelper {
         $File = null;
 
         @unlink($file_path);
-        print __METHOD__ . " unlinked: $file_path\n";
     }
 
     /**
