@@ -3,6 +3,7 @@
 namespace EnvoyMediaGroup\Columna\Tests;
 
 use EnvoyMediaGroup\Columna\CombinedWriter;
+use EnvoyMediaGroup\Columna\FileHelper;
 use Exception;
 
 /**
@@ -25,6 +26,16 @@ class CombinedWriterTest extends WriterAbstractTestCase {
                 throw new Exception("Test fixture file '{$file}' was deleted during a test.");
             }
         }
+        
+        $tmp_ext = FileHelper::TMP_FILE_EXTENSION;
+        $tmp_ext_len = strlen($tmp_ext);
+        $tmp_files = scandir('/tmp/');
+        foreach ($tmp_files as $file) {
+            if (mb_substr($file,-$tmp_ext_len,$tmp_ext_len) === $tmp_ext) {
+                throw new Exception("Test left a tmp file behind at: /tmp/{$file}");
+            }
+        }
+
         parent::tearDown();
     }
 
@@ -46,7 +57,7 @@ class CombinedWriterTest extends WriterAbstractTestCase {
         $this->assertFileEqualsBrief(self::FIXTURES_DIR . 'combined_file--has_data.scf', self::TEST_OUTPUT_FILE);
     }
 
-    public function testWritesFileFromRecursiveCombinationOfChunksOfFiles() {;
+    public function testWritesFileFromRecursiveCombinationOfChunksOfFiles() {
         $CombinedWriter = new class($this->getMockFileHelper()) extends CombinedWriter {
             public $combine_invocations = 0;
             protected function getChunkSize(): int {
@@ -68,7 +79,7 @@ class CombinedWriterTest extends WriterAbstractTestCase {
 
         $this->assertFileEqualsBrief(self::FIXTURES_DIR . 'combined_file--has_data.scf', self::TEST_OUTPUT_FILE);
         //Expect 3 invocations:
-        //   - 5 files gets broken down into 3 groups -> 3 results
+        //   - 6 files gets broken down into 3 groups -> 3 results
         //   - 3 files gets broken down into 2 groups -> 2 results
         //   - 2 files get combined into 1 result
         $this->assertEquals(3,$CombinedWriter->combine_invocations);

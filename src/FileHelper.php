@@ -7,6 +7,8 @@ use SplFileObject;
 
 class FileHelper {
 
+    public const TMP_FILE_EXTENSION = '.scf.tmp';
+
     /** @var string */
     protected $tmp_directory;
 
@@ -34,7 +36,7 @@ class FileHelper {
      */
     protected function generateTmpFilePath(): string {
         $rand = md5(mt_rand());
-        return $this->tmp_directory . "/{$rand}.tmp";
+        return $this->tmp_directory . "/{$rand}" . self::TMP_FILE_EXTENSION;
     }
 
     /**

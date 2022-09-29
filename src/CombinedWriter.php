@@ -79,10 +79,6 @@ class CombinedWriter extends WriterAbstract {
      * @return string|SplFileObject
      */
     protected function combineFilesRecursivelyByChunks(array $partial_files, bool $recur = false) {
-        if (count($partial_files) === 1) {
-            return current($partial_files);
-        }
-
         if (count($partial_files) > $this->getChunkSize()) {
             $chunks = array_chunk($partial_files, $this->getChunkSize());
             $more_partial_files = [];
@@ -91,7 +87,6 @@ class CombinedWriter extends WriterAbstract {
             }
             return $this->combineFilesRecursivelyByChunks($more_partial_files,true);
         }
-
         return $this->combineFiles($partial_files,$recur);
     }
 
