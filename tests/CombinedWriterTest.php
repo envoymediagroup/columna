@@ -26,7 +26,7 @@ class CombinedWriterTest extends WriterAbstractTestCase {
                 throw new Exception("Test fixture file '{$file}' was deleted during a test.");
             }
         }
-        
+
         $tmp_ext = FileHelper::TMP_FILE_EXTENSION;
         $tmp_ext_len = strlen($tmp_ext);
         $tmp_files = scandir('/tmp/');
