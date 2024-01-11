@@ -78,6 +78,42 @@ class ConstraintTest extends ConstraintTestAbstract {
         $this->assertEquals($expected_total,$total);
     }
 
+    public function testContainsAllHasData() {
+        $workload_array = $this->getWorkloadArray();
+        $workload_array['constraints'] = [
+            [
+                [
+                    'name' => 'url',
+                    'comparator' => Constraint::CONTAINS_ALL,
+                    'value' => ['goog','google'],
+                ],
+            ]
+        ];
+
+        $total = $this->runQueryAndGetMetricTotal($workload_array);
+
+        $expected_total = 233;
+        $this->assertEquals($expected_total,$total);
+    }
+
+    public function testContainsAllNoData() {
+        $workload_array = $this->getWorkloadArray();
+        $workload_array['constraints'] = [
+            [
+                [
+                    'name' => 'url',
+                    'comparator' => Constraint::CONTAINS_IN,
+                    'value' => ['farkle','snoob'],
+                ],
+            ]
+        ];
+
+        $total = $this->runQueryAndGetMetricTotal($workload_array);
+
+        $expected_total = 0;
+        $this->assertEquals($expected_total,$total);
+    }
+
     public function testContainsHasData() {
         $workload_array = $this->getWorkloadArray();
         $workload_array['constraints'] = [

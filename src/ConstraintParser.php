@@ -177,6 +177,15 @@ class ConstraintParser {
                     }
                     return false;
                 };
+            case Constraint::CONTAINS_ALL:
+                return function($value) use ($target_value): bool {
+                    foreach ($target_value as $item) {
+                        if (mb_stripos($value,$item) === false) {
+                            return false;
+                        }
+                    }
+                    return true;
+                };
             case Constraint::NOT_CONTAINS_IN:
                 return function($value) use ($target_value): bool {
                     foreach ($target_value as $item) {
@@ -242,6 +251,7 @@ class ConstraintParser {
             Constraint::IN,
             Constraint::NOT_IN,
             Constraint::CONTAINS_IN,
+            Constraint::CONTAINS_ALL,
             Constraint::NOT_CONTAINS_IN,
         ])) {
             return $this->generateCallableFromConstraintString($constraint);
