@@ -17,6 +17,7 @@ class Constraint {
     public const CONTAINS = 'contains';
     public const NOT_CONTAINS = 'not contains';
     public const CONTAINS_IN = 'contains in';
+    public const CONTAINS_ALL = 'contains all';
     public const NOT_CONTAINS_IN = 'not contains in';
     public const BEGINS_WITH = 'begins with';
     public const NOT_BEGINS_WITH = 'not begins with';
@@ -30,8 +31,8 @@ class Constraint {
     protected const VALID_COMPARATORS = [
         self::EQUALS,self::NOT_EQUALS,self::GREATER_THAN,self::GREATER_THAN_OR_EQUALS,self::LESS_THAN,
         self::LESS_THAN_OR_EQUALS,self::IN,self::NOT_IN,self::CONTAINS,self::NOT_CONTAINS,self::CONTAINS_IN,
-        self::NOT_CONTAINS_IN,self::BEGINS_WITH,self::NOT_BEGINS_WITH,self::ENDS_WITH,self::NOT_ENDS_WITH,self::REGEX,
-        self::NOT_REGEX,self::EMPTY,self::NOT_EMPTY
+        self::CONTAINS_ALL,self::NOT_CONTAINS_IN,self::BEGINS_WITH,self::NOT_BEGINS_WITH,self::ENDS_WITH,
+        self::NOT_ENDS_WITH,self::REGEX,self::NOT_REGEX,self::EMPTY,self::NOT_EMPTY
     ];
 
     /** @var string */

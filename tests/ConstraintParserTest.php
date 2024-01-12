@@ -459,6 +459,44 @@ class ConstraintParserTest extends TestCase {
         $this->assertFalse($result);
     }
 
+    public function testContainsAllTrue() {
+        $Parser = new ConstraintParser();
+        $constraints_arrays = [
+            0 => [
+                0 => [
+                    "name" => "campaign_name",
+                    "comparator" => Constraint::CONTAINS_ALL,
+                    "value" => ['foo','bar'],
+                ]
+            ]
+        ];
+        $Constraints = $Parser->unserializeConstraints($constraints_arrays,$this->getCampaignNameColumnMeta());
+        $callable = $Constraints[0][0]['callable'];
+
+        $value = 'foobar';
+        $result = call_user_func($callable,$value);
+        $this->assertTrue($result);
+    }
+
+    public function testContainsAllFalse() {
+        $Parser = new ConstraintParser();
+        $constraints_arrays = [
+            0 => [
+                0 => [
+                    "name" => "campaign_name",
+                    "comparator" => Constraint::CONTAINS_ALL,
+                    "value" => ['ham','oba','cheese'],
+                ]
+            ]
+        ];
+        $Constraints = $Parser->unserializeConstraints($constraints_arrays,$this->getCampaignNameColumnMeta());
+        $callable = $Constraints[0][0]['callable'];
+
+        $value = 'boffqux';
+        $result = call_user_func($callable,$value);
+        $this->assertFalse($result);
+    }
+
     public function testNotContainsInTrue() {
         $Parser = new ConstraintParser();
         $constraints_arrays = [

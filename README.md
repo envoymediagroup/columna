@@ -388,7 +388,12 @@ If you have a suggestion that would make this better, please fork the repo and c
 Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
+2. Copy `.env.base` to `.env` (required) and update any environment variables (optional)
+3. Run `docker-compose up`
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Make changes
+4. Run `docker exec -it columna composer run test` to make sure the unit tests pass
+5. Run `docker exec -it columna composer run bundle` to create a new `BundledReader.php`
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
