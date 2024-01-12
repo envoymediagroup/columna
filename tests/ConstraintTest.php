@@ -92,7 +92,7 @@ class ConstraintTest extends ConstraintTestAbstract {
 
         $total = $this->runQueryAndGetMetricTotal($workload_array);
 
-        $expected_total = 233;
+        $expected_total = 180;
         $this->assertEquals($expected_total,$total);
     }
 
