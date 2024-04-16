@@ -169,6 +169,7 @@ abstract class WriterAbstract {
      * @return array
      */
     protected function generateMetaWithData(array $metric_values, array $column_byte_offsets): array {
+        $metric_values = RleHelper::rleUncompress($metric_values);
         return [
             "date" => $this->date,
             "metric" => $this->MetricDefinition->getName(),
