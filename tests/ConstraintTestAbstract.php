@@ -73,7 +73,7 @@ abstract class ConstraintTestAbstract extends TestCase {
             if ($i === 0) {
                 continue;
             }
-            $value = str_getcsv($line)[$index];
+            $value = str_getcsv($line, ",", '"', "\\")[$index];
             if (ctype_digit($value) !== true) {
                 throw new Exception(__CLASS__.'::'.__FUNCTION__." value was not an integer, got {$value}.");
             }

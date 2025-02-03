@@ -4,6 +4,18 @@ namespace EnvoyMediaGroup\Columna;
 
 use Exception;
 
+// define arrau_any function if we are in a PHP version that does not have it
+if (!function_exists('array_any')) {
+    function array_any(array $array, callable $callback): bool {
+        foreach ($array as $value) {
+            if ($callback($value)) {
+                return true; // Return true if any element satisfies the condition
+            }
+        }
+        return false; // Return false if no element satisfies the condition
+    }
+}
+
 class RleHelper {
 
     public const RLE_SEPARATOR = "\036"; //Record Separator, chr(30), hex 036
@@ -27,10 +39,9 @@ class RleHelper {
             return $values;
         }
 
-        $len_check_separator = ',';
-        $len = mb_strlen(join($len_check_separator,$values));
+        $len = array_reduce($values, function($carry, $item) { return $carry + mb_strlen($item) + 1; }, 0);
         $compressed = RleHelper::rleCompress($column,$values);
-        $compressed_len = mb_strlen(join($len_check_separator,$compressed));
+        $compressed_len = array_reduce($compressed, function($carry, $item) { return $carry + mb_strlen($item) + 1; }, 0);
         $compression_savings_pct = 1 - ($compressed_len / $len);
         $min_compression_pct = ($threshold_percent / 100);
 
@@ -95,7 +106,7 @@ class RleHelper {
      */
     public static function rleUncompress(array $column_values): array {
         $temp = [];
-        if (mb_strpos(join('',$column_values),self::RLE_SEPARATOR) === false) {
+        if (!array_any($column_values, function($value) { return mb_strpos($value, self::RLE_SEPARATOR) !== false; })) {
             return $column_values;
         }
         foreach ($column_values as $compressed) {
@@ -111,5 +122,4 @@ class RleHelper {
         }
         return $temp;
     }
-
 }
