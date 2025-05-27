@@ -168,7 +168,7 @@ class BundledReader
         }
         $metric_index = $required_columns[$metric];
         $data_set = $this->removeNonSelectedColumns($data_set, $selected_columns);
-        $data_set = $this->prependMd5Hashes($data_set, $metric_index);
+        $data_set = $this->prependMd5Hashes($data_set, $metric_index, $do_aggregate);
         $metric_index++;
         //offset for prepended md5. $selected_columns_meta handled in generateSelectedColumnsMeta().
         $metadata = $this->generateMetadata($data_set, $date, $metric, $metric_index, $selected_columns, $column_meta, $do_aggregate, $do_aggregate_meta);
@@ -408,14 +408,17 @@ class BundledReader
     /**
      * @param array $data_set
      * @param int $metric_index
+     * @param bool $do_aggregate
      * @return array
      */
-    protected function prependMd5Hashes(array $data_set, int $metric_index) : array
+    protected function prependMd5Hashes(array $data_set, int $metric_index, bool $do_aggregate) : array
     {
         $temp = [];
         foreach ($data_set as $row) {
             $key_array = $row;
-            unset($key_array[$metric_index]);
+            if ($do_aggregate) {
+                unset($key_array[$metric_index]);
+            }
             $md5 = md5(join('~', $key_array));
             $item = [0 => $md5];
             //Do this rather than unshift because keys may not be sequential and unshift would reset them.
