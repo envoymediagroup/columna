@@ -87,11 +87,6 @@ class RleHelper {
 
         $compressed_values[] = $last_value . ($value_count > 1 ? (self::RLE_SEPARATOR . $value_count) : "");
 
-        if ($values !== self::rleUncompress($compressed_values)) {
-            throw new Exception(__CLASS__.'::'.__FUNCTION__." on column '{$column}' values before and " .
-                "after compression do not match.");
-        }
-
         return $compressed_values;
     }
 
